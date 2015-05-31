@@ -14,3 +14,10 @@ au FileType objc ru after/syntax/objc_enhanced.vim
 			\| if globpath(expand('<afile>:p:h'), '*.xcodeproj') != '' |
 			\  setl makeprg=open\ -a\ xcode\ &&\ osascript\ -e\ 'tell\ app\ \"Xcode\"\ to\ build'
 			\| endif
+
+au FileType objcpp ru after/syntax/objcpp_enhanced.vim
+			\| let b:match_words = '@\(implementation\|interface\):@end'
+			\| setl inc=^\s*#\s*import omnifunc=objcpp#cocoacomplete#Complete
+			\| if globpath(expand('<afile>:p:h'), '*.xcodeproj') != '' |
+			\  setl makeprg=open\ -a\ xcode\ &&\ osascript\ -e\ 'tell\ app\ \"Xcode\"\ to\ build'
+			\| endif

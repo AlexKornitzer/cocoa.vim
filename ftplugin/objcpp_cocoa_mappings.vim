@@ -21,8 +21,8 @@ endif
 let g:x = b:cocoa_proj
 
 com! -buffer ListMethods call objcpp#method_list#Activate(1)
-com! -buffer -nargs=? -complete=customlist,objcpp#method_builder#Completion BuildMethods call objc#method_builder#Build('<args>')
-com! -buffer -nargs=? -complete=custom,objcpp#man#Completion CocoaDoc call objc#man#ShowDoc('<args>')
+com! -buffer -nargs=? -complete=customlist,objcpp#method_builder#Completion BuildMethods call objcpp#method_builder#Build('<args>')
+com! -buffer -nargs=? -complete=custom,objcpp#man#Completion CocoaDoc call objcpp#man#ShowDoc('<args>')
 com! -buffer -nargs=? Alternate call <SID>AlternateFile()
 
 let objcpp_man_key = exists('objcpp_man_key') ? objcpp_man_key : 'K'

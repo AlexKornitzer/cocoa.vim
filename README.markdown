@@ -17,12 +17,14 @@ cd ~/.vim/bundle
 git clone https://github.com/AlexKornitzer/cocoa.vim.git
 ```
 
-## Manually
+### Manually
 
+```
 mkdir cocoa.vim
 cd !$
 git clone git://github.com/msanders/cocoa.vim.git
 cp -r . ~/.vim
+```
 
 ## Author
 

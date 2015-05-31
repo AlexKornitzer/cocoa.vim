@@ -1,24 +1,24 @@
-" File:         objc#man.vim (part of the cocoa.vim plugin)
-" Author:       Michael Sanders (msanders42 [at] gmail [dot] com)
-" Description:  Allows you to look up Cocoa API docs in Vim.
+" File:			objc#man.vim (part of the cocoa.vim plugin)
+" Author:		Michael Sanders (msanders42 [at] gmail [dot] com)
+" Description:	Allows you to look up Cocoa API docs in Vim.
 " Last Updated: December 26, 2009
-" NOTE:         See http://tinyurl.com/remove-annoying-alert
-"               for removing the annoying security alert in Leopard.
+" NOTE:			See http://tinyurl.com/remove-annoying-alert
+"				for removing the annoying security alert in Leopard.
 
 " Return all matches in for ":CocoaDoc <tab>" sorted by length.
 fun objc#man#Completion(ArgLead, CmdLine, CursorPos)
 	return system('grep -ho "^'.a:ArgLead.'\w*" ~/.vim/lib/cocoa_indexes/*.txt'.
-	            \ "| perl -e 'print sort {length $a <=> length $b} <>'")
+				\ "| perl -e 'print sort {length $a <=> length $b} <>'")
 endf
 
 let s:docsets =  []
 let locations = [
-			\	{'path': '/Developer/Documentation/DocSets/com.apple.ADC_Reference_Library.CoreReference.docset',
-			\	'alias': 'Leopard'},
-			\	{'path': '/Developer/Documentation/DocSets/com.apple.adc.documentation.AppleSnowLeopard.CoreReference.docset',
-			\	'alias': 'Snow Leopard'},
-			\	{'path': '/Developer/Platforms/iPhoneOS.platform/Developer/Documentation/DocSets/com.apple.adc.documentation.AppleiPhone3_0.iPhoneLibrary.docset',
-			\	'alias': 'iPhone 3.0'}
+			\	{'path': $HOME.'/Library/Developer/Shared/Documentation/DocSets/com.apple.adc.documentation.iOS.docset',
+			\	'alias': 'iOS'},
+			\	{'path': $HOME.'/Library/Developer/Shared/Documentation/DocSets/com.apple.adc.documentation.OSX.docset',
+			\	'alias': 'OSX'},
+			\	{'path': $HOME.'/Library/Developer/Shared/Documentation/DocSets/com.apple.adc.documentation.Xcode.docset',
+			\	'alias': 'Xcode'}
 			\	]
 for location in locations
 	if isdirectory(location.path)
@@ -26,7 +26,7 @@ for location in locations
 	endif
 endfor
 
-let s:docset_cmd = '/Developer/usr/bin/docsetutil search -skip-text -query '
+let s:docset_cmd = 'xcrun docsetutil search -skip-text -query '
 
 fun s:OpenFile(file)
 	if a:file =~ '/.*/man/'
@@ -71,15 +71,17 @@ fun objc#man#ShowDoc(...)
 		let docset = location.path
 		let response = split(system(s:docset_cmd.word.' '.docset), "\n")
 		let docset .= '/Contents/Resources/Documents/' " Actual path of files
+
 		for line in response
 			" Format string is: " Language/type/class/word path"
 			let path = matchstr(line, '\S*$')
+
 			if path[0] != '/' | let path = docset.path | endif
 
 			" Ignore duplicate entries
 			if has_key(references, path) | continue | endif
 
-			let attrs = split(matchstr(line, '^ \zs*\S*'), '/')[:2]
+			let attrs = split(matchstr(line, '^ \zs\S*'), '/')[:2]
 
 			" Ignore unrecognized entries.
 			if len(attrs) != 3 | continue | endif
@@ -115,10 +117,10 @@ fun objc#man#ShowDoc(...)
 endf
 
 fun s:ChooseFrom(references)
- 	let type_abbr = {'cl' : 'Class', 'intf' : 'Protocol', 'cat' : 'Category',
-	               \ 'intfm' : 'Method', 'instm' : 'Method', 'econst' : 'Enum',
-	               \ 'tdef' : 'Typedef', 'macro' : 'Macro', 'data' : 'Data',
-	               \ 'func' : 'Function'}
+	let type_abbr = {'cl' : 'Class', 'intf' : 'Protocol', 'cat' : 'Category',
+				   \ 'intfm' : 'Method', 'instm' : 'Method', 'econst' : 'Enum',
+				   \ 'tdef' : 'Typedef', 'macro' : 'Macro', 'data' : 'Data',
+				   \ 'func' : 'Function'}
 	let inputlist = []
 	" Don't display "Objective-C" if all items are objc
 	let show_lang = !AllKeysEqual(values(a:references), 'lang', 'Objective-C')
@@ -174,12 +176,12 @@ fun s:GetMethodName()
 endf
 
 fun s:MatchAll(haystack, needle)
-    let matches = matchstr(a:haystack, a:needle)
-    let index = matchend(a:haystack, a:needle)
-    while index != -1
+	let matches = matchstr(a:haystack, a:needle)
+	let index = matchend(a:haystack, a:needle)
+	while index != -1
 		let matches .= matchstr(a:haystack, a:needle, index + 1)
-        let index = matchend(a:haystack, a:needle, index + 1)
-    endw
-    return matches
+		let index = matchend(a:haystack, a:needle, index + 1)
+	endw
+	return matches
 endf
 " vim:noet:sw=4:ts=4:ft=vim

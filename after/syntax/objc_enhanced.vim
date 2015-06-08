@@ -27,8 +27,8 @@ syn match objcMethod '^\s*[-+]\s*\_.\{-}[\{;]'me=e-1 transparent contains=cParen
 " Matches "bar & foobar" in above
 syn match objcMethodArg ')\@<=\s*\k\+' contained containedin=objcMethod
 " Matches "foo:" & "and:" in above
-syn match objcMethodName '\(^\s*[-+]\s*(\_[^)]*)\)\@<=\_\s*\_\k\+' contained containedin=objcMethod
-syn match objcMethodColon '\k\+\s*:' contained containedin=objcMethod
+"syn match objcMethodName '\(^\s*[-+]\s*(\_[^)]*)\)\@<=\_\s*\_\k\+' contained containedin=objcMethod
+"syn match objcMethodColon '\k\+\s*:' contained containedin=objcMethod
 " Don't match these groups in cParen "(...)"
 syn cluster cParenGroup add=objcMethodName,objcMethodArg,objcMethodColon
 " This fixes a bug with completion inside parens (e.g. if ([NSString ]))
@@ -39,6 +39,9 @@ syn cluster cParenGroup remove=objcMessage
 syn match objcMessageName '\(\[\s*\k\+\s\+\|\]\s*\)\@<=\k*\s*\]'me=e-1 display contained containedin=objcMessage
 " Matches "foo:" in "[NSObject foo: bar]" or "[[NSObject new] foo: bar]"
 syn match objcMessageColon '\(\_\S\+\_\s\+\)\@<=\k\+\s*:' display contained containedin=objcMessage
+
+" Match private variables
+syn match objcPrivateVariable '\(.*\(\s\|:\|\[\|\_^\)\)\@<=_[[:alnum:]]\+' display containedin=objcMethodCall
 
 " Don't match these in this strange group for edge cases...
 syn cluster cMultiGroup add=objcMessageColon,objcMessageName,objcMethodName,objcMethodArg,objcMethodColon
@@ -58,3 +61,5 @@ hi link objcSubclass objcMethodName
 hi link objcSuperclass String
 
 hi link objcError Error
+
+hi link objcPrivateVariable Special

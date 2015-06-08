@@ -49,6 +49,7 @@ hi link objcMethodName Special
 hi link objcMethodColon objcMethodName
 
 hi link objcMethodArg Identifier
+hi link objcMethodCall Identifier
 
 hi link objcMessageName objcMethodArg
 hi link objcMessageColon objcMessageName

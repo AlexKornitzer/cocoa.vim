@@ -12,19 +12,28 @@ fun objc#man#Completion(ArgLead, CmdLine, CursorPos)
 endf
 
 let s:docsets =  []
+let s:online_library = 'https://developer.apple.com/library/'
 let locations = [
   \ {'path': $HOME.'/Library/Developer/Shared/Documentation/DocSets/com.apple.adc.documentation.iOS.docset',
-  \ 'online': 'https://developer.apple.com/library/ios/',
   \ 'alias': 'iOS'},
   \ {'path': $HOME.'/Library/Developer/Shared/Documentation/DocSets/com.apple.adc.documentation.OSX.docset',
-  \ 'online': 'https://developer.apple.com/library/mac/',
   \ 'alias': 'OSX'},
   \ {'path': $HOME.'/Library/Developer/Shared/Documentation/DocSets/com.apple.adc.documentation.watchOS.docset',
-  \ 'online': 'https://developer.apple.com/library/watchos/',
   \ 'alias': 'WatchOS'},
   \ {'path': $HOME.'/Library/Developer/Shared/Documentation/DocSets/com.apple.adc.documentation.Xcode.docset',
-  \ 'online': '',
-  \ 'alias': 'Xcode'}
+  \ 'alias': 'Xcode'},
+  \ {'path': '/Applications/Xcode.app/Contents/Developer/Documentation/DocSets/com.apple.adc.documentation.iOS.docset',
+  \ 'platform': 'ios/',
+  \ 'alias': 'iOS - Online'},
+  \ {'path': '/Applications/Xcode.app/Contents/Developer/Documentation/DocSets/com.apple.adc.documentation.OSX.docset',
+  \ 'platform': 'mac/',
+  \ 'alias': 'OSX - Online'},
+  \ {'path': '/Applications/Xcode.app/Contents/Developer/Documentation/DocSets/com.apple.adc.documentation.watchOS.docset',
+  \ 'platform': 'watchos/',
+  \ 'alias': 'watchOS - Online'},
+  \ {'path': '/Applications/Xcode.app/Contents/Developer/Documentation/DocSets/com.apple.adc.documentation.Xcode.docset',
+  \ 'platform': 'xcode/',
+  \ 'alias': 'Xcode - Online'}
   \ ]
 for location in locations
   if isdirectory(location.path)
@@ -84,7 +93,13 @@ fun objc#man#ShowDoc(...)
       " Format string is: " Language/type/class/word path"
       let path = matchstr(line, '\S*$')
 
-      if path[0] != '/' | let path = docset.path | endif
+	  " If online we need to modify the path
+	  if (location.alias =~ "Online")
+        let path = matchstr(line, '\S*$')
+        let path = s:online_library.location.platform.path
+	  elseif path[0] != '/'
+		let path = docset.path
+	  endif
 
       " Ignore duplicate entries
       if has_key(references, path) | continue | endif
@@ -97,26 +112,15 @@ fun objc#man#ShowDoc(...)
       " If no class is given use type instead
       let [lang, type, class] = attrs
       if class == '-' | let class = type | endif
-      let references[path] = {'lang': lang, 'class': class,
+
+	  " Add to the references
+	  let references[path] = {'lang': lang, 'class': class,
                   \ 'location': location}
-
-      " Construct the online version. Do we really need to piggy back of
-      " the offline, I think we can just use the reference headers in
-      " the Xcode app!
-      if (location.online != '')
-        let path = matchstr(line, '\S*$')
-        let path = location.online.path
-
-        " We have to deep copy to remove the references from the
-        " location dictionary, there is probably a more efficient way
-        " than this!
-        let references[path] = {'lang': lang, 'class': class,
-                    \ 'location': deepcopy(location)}
-        let references[path].location.alias = references[path].location.alias.' - Online'
-      endif
 
     endfor
   endfor
+
+  echo references
 
   " Then try man
   let man = system('man -S2:3 -aW '.word)

@@ -120,8 +120,6 @@ fun objc#man#ShowDoc(...)
     endfor
   endfor
 
-  echo references
-
   " Then try man
   let man = system('man -S2:3 -aW '.word)
   if man !~ '^No manual entry'

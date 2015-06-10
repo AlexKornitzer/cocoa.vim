@@ -152,7 +152,7 @@ fun s:ChooseFrom(references)
   " Don't display "Objective-C" if all items are objc
   let show_lang = !AllKeysEqual(values(a:references), 'lang', 'Objective-C')
   let i = 1
-  for ref in values(a:references)
+  for ref in sort(values(a:references))
     let class = ref.class
     if has_key(type_abbr, class) | let class = type_abbr[class] | endif
       call add(inputlist, i.'. '.(show_lang ? ref['lang'].' ' : '').class.' ('.ref.location.alias.')')

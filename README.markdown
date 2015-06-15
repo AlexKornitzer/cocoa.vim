@@ -1,6 +1,6 @@
 # cocoa.vim
 
-Vim plugin for Cocoa/Objective-C development with updated documentation support (iOS, OS X, Xcode).
+Vim plugin for Cocoa/Objective-C development with updated documentation support for iOS, OS X, watchOS & Xcode. It is now possible to use the online documentation which is easier to navigate; this also removes the requirement to download the offline documentation.
 
 ## Installation
 

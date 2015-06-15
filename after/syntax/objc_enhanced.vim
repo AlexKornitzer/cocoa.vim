@@ -44,7 +44,7 @@ syn match objcMessageColon '\(\_\S\+\_\s\+\)\@<=\k\+\s*:' display contained cont
 syn match objcPrivateVariable '\(.*\(\s\|:\|,\|(\|\[\|\_^\)\)\@<=_[[:alnum:]]\+' display containedin=objcMethodCall
 
 " Lets assume that the format kXxxxxxxx is a constant and highlight it
-syn match objcConstantVariable '\(.*\(\s\|:\|,\|(\|\[\|\_^\)\)\@<=k[A-Z][[:alnum:]]\+' display containedin=objcMethodCall
+syn match objcConstantVariable '\(.*\(\s\|:\|,\|(\|\[\|\_^\)\)\@<=k[A-Z][[:alnum:]]\+' display contained containedin=objcMethodCall
 
 " Don't match these in this strange group for edge cases...
 syn cluster cMultiGroup add=objcMessageColon,objcMessageName,objcMethodName,objcMethodArg,objcMethodColon

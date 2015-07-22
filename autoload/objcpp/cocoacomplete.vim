@@ -10,7 +10,7 @@ if !isdirectory(s:cocoa_indexes)
 	echom 'Error in cocoacomplete.vim: could not find ~/.vim/lib/cocoa_indexes directory'
 endif
 
-fun! objc#cocoacomplete#Complete(findstart, base)
+fun! objcpp#cocoacomplete#Complete(findstart, base)
 	if a:findstart
 		" Column where completion starts:
 		return match(getline('.'), '\k\+\%'.col('.').'c')
